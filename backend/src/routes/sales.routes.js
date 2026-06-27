@@ -98,7 +98,7 @@ router.post('/', authMiddleware, requireRole('admin', 'sales'), async (req, res,
         },
         include: { items: { include: { product: true } } }
       });
-    });
+    }, { maxWait: 15000, timeout: 30000 });
 
     await createAuditLog({ userId: req.user.id, action: 'CREATED', model: 'SalesOrder', recordId: order.id, description: `Sales Order ${order.orderNo} created for ${customer} (Total: ₹${totalAmount.toLocaleString('en-IN')})`, salesOrderId: order.id });
     res.status(201).json({ success: true, data: order });

@@ -51,7 +51,7 @@ async function triggerProcurement(product, shortageQty, salesOrderId, salesOrder
           } : undefined
         }
       });
-    });
+    }, { maxWait: 15000, timeout: 30000 });
 
     await createAuditLog({ userId, action: 'AUTO_CREATED', model: 'ManufacturingOrder', recordId: mo.id, description: `Auto-created MO ${mo.orderNo} for ${shortageQty} × ${product.name} (triggered by ${salesOrderNo})` });
     await createNotification({ type: 'warning', title: 'Manufacturing Order Created', message: `${mo.orderNo} auto-created for ${shortageQty} × ${product.name} (from ${salesOrderNo})`, reference: mo.orderNo });
@@ -90,7 +90,7 @@ async function triggerProcurement(product, shortageQty, salesOrderId, salesOrder
           }
         }
       });
-    });
+    }, { maxWait: 15000, timeout: 30000 });
 
     await createAuditLog({ userId, action: 'AUTO_CREATED', model: 'PurchaseOrder', recordId: po.id, description: `Auto-created PO ${po.orderNo} for ${orderQty} × ${product.name} (triggered by ${salesOrderNo})` });
     await createNotification({ type: 'purchase_order_pending', title: 'Purchase Order Created', message: `${po.orderNo} auto-created for ${orderQty} × ${product.name} (from ${salesOrderNo})`, reference: po.orderNo });
@@ -143,7 +143,7 @@ async function triggerAutoReorder(product, userId = 'system') {
         }
       }
     });
-  });
+  }, { maxWait: 15000, timeout: 30000 });
 
   if (userId !== 'system') {
     await createAuditLog({ userId, action: 'AUTO_REORDER', model: 'PurchaseOrder', recordId: po.id, description: `Auto-reorder Draft PO ${po.orderNo} created for ${product.reorderQty} × ${product.name} due to low stock.` });
