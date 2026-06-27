@@ -59,7 +59,8 @@ export default function AttendanceView() {
 
   const handleExportMonthly = () => {
     const [year, month] = monthStr.split('-');
-    window.open(`http://localhost:5000/api/attendance/export?month=${month}&year=${year}&token=${localStorage.getItem('erp_token')}`);
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    window.open(`${apiUrl}/attendance/export?month=${month}&year=${year}&token=${localStorage.getItem('erp_token')}`);
   };
 
   return (
