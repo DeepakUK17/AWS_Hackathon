@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: forgeos-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install && npx prisma generate
+    startCommand: node src/app.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false   # Set manually in Render dashboard (Aurora PostgreSQL connection string)
+      - key: JWT_SECRET
+        sync: false   # Set manually in Render dashboard
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: GEMINI_API_KEY
+        sync: false   # Set manually in Render dashboard
+      - key: FRONTEND_URL
+        sync: false   # Set to your Vercel URL after deploy
