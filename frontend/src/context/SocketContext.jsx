@@ -19,6 +19,10 @@ export function SocketProvider({ children }) {
       autoConnect: true
     });
 
+    newSocket.on('connect', () => console.log('✅ Socket globally connected!', newSocket.id));
+    newSocket.on('connect_error', (err) => console.error('❌ Socket connect error:', err.message));
+    newSocket.on('data_updated', (data) => console.log('📡 Global socket received update for module:', data.module));
+    
     setSocket(newSocket);
 
     // Cleanup on unmount
