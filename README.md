@@ -16,13 +16,53 @@
 
 <hr />
 
-## 🚀 Live Demo
+## 🚀 Live Evaluation Links
 
-| Service | URL |
-|---------|-----|
-| **ERP Application** | [your-forgeos-app.vercel.app](https://your-forgeos-app.vercel.app) |
-| **API Backend** | [your-forgeos-backend.onrender.com](https://your-forgeos-backend.onrender.com/api/health) |
-| **Public Storefront** | [your-forgeos-store.vercel.app](https://your-forgeos-store.vercel.app) |
+Because this project is being evaluated online, everything has been securely deployed to production for you to test instantly. 
+
+| Service | Live URL |
+|---------|----------|
+| **ERP Application (Core)** | [https://forgeos-erp.vercel.app/](https://forgeos-erp.vercel.app/) |
+| **B2C Storefront** | [https://forgeos-store.vercel.app/](https://forgeos-store.vercel.app/) |
+| **API Backend Health** | [https://aws-hackathon-jm5u.onrender.com/api/health](https://aws-hackathon-jm5u.onrender.com/api/health) |
+
+### 🔑 Instant Login Credentials (ERP)
+Use these credentials to log into the ERP and test the role-based access control.
+
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin (Business Owner)** | admin@forgeos.com | Admin@123 |
+| **Sales Manager** | sales@forgeos.com | Sales@123 |
+| **Purchase Manager** | purchase@forgeos.com | Purchase@123 |
+| **Production Manager** | mfg@forgeos.com | Mfg@123 |
+| **Inventory Manager** | inventory@forgeos.com | Inv@123 |
+| **HR Manager** | hr@forgeos.com | Hr@123 |
+
+*(Note: The Storefront requires you to quickly sign up as a mock customer to place an order).*
+
+---
+
+## 👨‍⚖️ Evaluator's Testing Guide
+Want to see the magic of ForgeOS? Try these 3 quick tests:
+
+### Test 1: The Automated MTO (Make-to-Order) Pipeline
+ForgeOS contains complex mathematical business logic to automate factory floors. 
+1. Log into the ERP as `admin@forgeos.com`.
+2. Go to **Products** and look at a product (e.g., Dining Table). Note the physical stock.
+3. Go to **Sales Orders** and create a new order for a quantity *larger* than the current stock.
+4. Click the green **Confirm** checkmark on that Sales Order.
+5. **The Magic:** You will immediately get an AI alert that an MTO (Manufacturing Order) was automatically drafted for the exact shortage amount! Check the **Manufacturing** tab to see it waiting for production.
+
+### Test 2: Storefront to ERP Sync
+1. Open the **Storefront** in a private window/different browser.
+2. Sign up and place an order in the cart.
+3. Flip back to the **ERP Application**.
+4. The Sales Order instantly appears in the Sales dashboard without needing to refresh!
+
+### Test 3: Context-Aware AI Business Assistant
+1. In the ERP, click the **Forge AI** brain icon in the top right.
+2. Ask it: *"Which of our products are running low on stock?"* or *"Summarize our sales."*
+3. The AI reads the live **AWS Aurora** database in real-time, calculates the metrics, and gives you a plain-English operational report.
 
 ---
 
@@ -31,19 +71,14 @@
 **ForgeOS** is a full-stack, AI-powered Business Operating System designed for manufacturing SMEs. It replaces fragmented spreadsheets and siloed tools with a single, intelligent platform covering every business function — from customer orders to factory floor to HR payroll.
 
 ### The Problem
-Manufacturing SMEs ($1M–$50M revenue) are stuck using:
-- Excel for inventory and orders
-- WhatsApp for production coordination
-- Manual reports for business insights
-
-This costs them **15–20% revenue loss** from stockouts, production delays, and poor decision-making.
+Manufacturing SMEs ($1M–$50M revenue) are stuck using Excel for inventory and WhatsApp for production coordination. This costs them **15–20% revenue loss** from stockouts, production delays, and poor decision-making.
 
 ### The Solution
 ForgeOS gives manufacturing businesses a **production-ready ERP** with:
 - 🤖 **AI-powered insights** — ask your data in plain English
 - ⚡ **Real-time operations** — live updates across all users instantly
 - 🔐 **Role-based access** — every team member sees only what they need
-- 📱 **Customer-facing storefront** — integrated B2C channel
+- 📱 **Customer-facing storefront** — integrated B2C sales channel
 
 ---
 
@@ -80,102 +115,23 @@ ForgeOS gives manufacturing businesses a **production-ready ERP** with:
 
 ---
 
-## ✨ Key Features
+## ✨ Key Technical Features
 
 ### 🔄 Fully Automated Procurement
-- **Make-to-Order (MTO):** Sales Orders auto-trigger Manufacturing Orders
-- **Smart Auto-Purchasing:** Manufacturing shortfalls auto-draft Purchase Orders
-- **Quantity Optimization:** Respects min reorder quantities, prevents duplicate POs
+- **Make-to-Order (MTO):** Sales Orders auto-trigger Manufacturing Orders when stock is short.
+- **Smart Auto-Purchasing:** Manufacturing shortfalls auto-draft Purchase Orders for raw materials.
+- **Quantity Optimization:** Respects minimum reorder quantities and prevents duplicate purchase orders.
 
 ### 🛡️ 6-Role Access Control
-| Role | Access |
-|------|--------|
-| **Admin** | Full system access |
-| **Sales** | Customer orders, delivery |
-| **Purchase** | Vendor orders, receiving |
-| **Manufacturing** | Production orders, work orders |
-| **Inventory** | Products, stock movements |
-| **HR** | Attendance, leave management |
+Enterprise-grade JWT authentication that restricts API endpoints and UI elements based on 6 distinct roles (Admin, Sales, Purchase, Manufacturing, Inventory, HR). 
 
 ### 🤖 Gemini AI Business Assistant
-- Reads live database context (orders, stock, alerts)
-- Role-aware: Sales users cannot extract financial secrets
-- Plain-English queries: *"Which products are running low?"*
+- Reads live database context (orders, stock, alerts).
+- Role-aware: Sales users cannot ask the AI to extract financial secrets or HR payroll data.
 
 ### ⚡ Real-Time Operations
-- Socket.io broadcasts every action to all connected users
-- No page refresh needed — live kanban, live stock counts
-
-### 🛒 Integrated B2C Storefront
-- Standalone customer-facing web store
-- Checkout directly creates Draft Sales Orders in ERP
-- Customer login to track order status in real-time
-
----
-
-## 🚀 Quick Start (Local Development)
-
-### Prerequisites
-- Node.js v18+
-- PostgreSQL v17+ (local) OR AWS Aurora PostgreSQL endpoint
-
-### 1. Database Setup
-```bash
-# For AWS Aurora PostgreSQL:
-DATABASE_URL="postgresql://admin:password@your-cluster.rds.amazonaws.com:5432/forgeos_db?sslmode=require"
-
-# For local PostgreSQL:
-DATABASE_URL="postgresql://postgres:password@localhost:5432/forgeos_db"
-```
-
-### 2. Backend
-```bash
-cd backend
-npm install
-cp .env.example .env     # Fill in your values
-npx prisma migrate dev --name init
-node prisma/seed.js      # Seeds demo data
-npm start                # http://localhost:5000
-```
-
-### 3. Frontend
-```bash
-cd frontend
-npm install
-npm run dev              # http://localhost:5173
-```
-
-### 4. Storefront
-```bash
-cd storefront
-npm install
-npm run dev              # http://localhost:5174
-```
-
----
-
-## 🔑 Demo Credentials
-
-| Role | Email | Password |
-|------|-------|----------|
-| **Admin (Business Owner)** | admin@forgeos.com | Admin@123 |
-| **Sales Manager** | sales@forgeos.com | Sales@123 |
-| **Purchase Manager** | purchase@forgeos.com | Purchase@123 |
-| **Production Manager** | mfg@forgeos.com | Mfg@123 |
-| **Inventory Manager** | inventory@forgeos.com | Inv@123 |
-| **HR Manager** | hr@forgeos.com | Hr@123 |
-
----
-
-## 💼 Business Model (SaaS)
-
-| Plan | Price | Users | Key Features |
-|------|-------|-------|--------------|
-| **Free** | $0/mo | Up to 3 | Core ERP, 1,000 orders/mo |
-| **Starter** | $49/mo | Up to 10 | + AI Assistant, Storefront |
-| **Pro** | $149/mo | Unlimited | + Advanced Analytics, API Access |
-
-**Target Market**: ~32 million manufacturing SMEs globally. Even 0.01% penetration = $47M ARR.
+- Custom Socket.io architecture broadcasts every action to connected users.
+- Live kanban boards and stock counts without page refreshes.
 
 ---
 
@@ -196,14 +152,12 @@ npm run dev              # http://localhost:5174
 
 ## 📊 AWS Database Usage
 
-This project uses **Amazon Aurora PostgreSQL** as its primary database.
+This project heavily utilizes **Amazon Aurora PostgreSQL** as its primary system of record.
+- All 14 complex, normalized application tables reside in Aurora.
+- Prisma ORM connects securely via SSL (`?sslmode=require`).
+- Complex transaction processing (e.g. reserving stock, deducting inventory, and generating multi-stage manufacturing orders) leverages Aurora's ACID compliance to prevent race conditions.
 
-- All 14 application tables reside in Aurora
-- Prisma ORM connects via SSL (`?sslmode=require`)
-- Schema includes full indexes for production-scale queries
-- Aurora's auto-scaling handles traffic spikes during peak order periods
-
-*See the AWS Console screenshot in the submission for proof of Aurora usage.*
+*See the AWS Console screenshot in our devpost submission for proof of Aurora deployment.*
 
 ---
 
