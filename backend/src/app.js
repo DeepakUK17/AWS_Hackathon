@@ -34,12 +34,18 @@ app.use((req, res, next) => {
   res.json = function(data) {
     if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method) && res.statusCode >= 200 && res.statusCode < 300) {
        if (req.originalUrl.startsWith('/api/')) {
-          const module = req.originalUrl.split('/')[2];
-          const socketManager = require('./lib/socket');
-          // Add a small delay to ensure DB transaction is fully committed and propagated
-          setTimeout(() => {
-            socketManager.emitDataUpdated(module);
-          }, 100);
+          // Robustly extract module name, ignoring any double slashes
+          const pathSegments = req.originalUrl.split('/').filter(Boolean);
+          // pathSegments is now ['api', 'sales', ...]
+          const module = pathSegments[1]; 
+          
+          if (module) {
+            const socketManager = require('./lib/socket');
+            // Add a small delay to ensure DB transaction is fully committed and propagated
+            setTimeout(() => {
+              socketManager.emitDataUpdated(module);
+            }, 100);
+          }
        }
     }
     return originalJson.call(this, data);
