@@ -115,6 +115,7 @@ export default function Sales() {
   };
 
   const handleConfirm = async (id, orderNo) => {
+    setLoading(true);
     try {
       const { data } = await api.post(`/sales/${id}/confirm`);
       if (data.shortages?.length > 0) {

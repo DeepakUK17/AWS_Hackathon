@@ -135,8 +135,8 @@ router.post('/:id/confirm', authMiddleware, requireRole('admin', 'sales'), async
         data: { reservedQty: item.qty }
       });
 
-      // Determine shortage to auto-procure
-      const shortage = product.procurementType === 'MTO' ? item.qty : Math.max(0, item.qty - freeToUse);
+      // Determine shortage to auto-procure (modified to ALWAYS check physical stock per user request)
+      const shortage = Math.max(0, item.qty - freeToUse);
 
       if (shortage > 0) {
         const result = await triggerProcurement(product, shortage, order.id, order.orderNo, req.user.id);

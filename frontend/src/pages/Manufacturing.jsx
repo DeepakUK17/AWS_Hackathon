@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/client';
 import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
-import { Plus, Check, Play, Square, Wrench, Search as SearchIcon, Filter, Download, XCircle, X } from 'lucide-react';
+import { Plus, Check, Play, Square, Wrench, Search as SearchIcon, Filter, Download, XCircle, X, PlayCircle, CheckCircle } from 'lucide-react';
 import { exportToCSV } from '../utils/export';
 import ConfirmModal from '../components/ConfirmModal';
 
@@ -98,6 +98,7 @@ export default function Manufacturing() {
   };
 
   const handleConfirm = async (id, orderNo) => {
+    setLoading(true);
     try {
       const { data } = await api.post(`/manufacturing/${id}/confirm`);
       if (data.shortages?.length > 0) {
