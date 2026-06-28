@@ -11,10 +11,12 @@ export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Initialize socket connection
-    const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+    // Auto-derive socket URL from API URL if missing to prevent environment variable typos
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || apiUrl.replace(/\/api\/?$/, '');
+    
     const newSocket = io(socketUrl, {
-      transports: ['websocket', 'polling']
+      autoConnect: true
     });
 
     setSocket(newSocket);
