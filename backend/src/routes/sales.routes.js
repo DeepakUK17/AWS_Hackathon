@@ -161,6 +161,15 @@ router.post('/:id/confirm', authMiddleware, requireRole('admin', 'sales'), async
 
     await createNotification({ type: 'sales_order_confirmed', title: 'Sales Order Confirmed', message: `${order.orderNo} confirmed for ${order.customer}`, reference: order.orderNo });
 
+    // Emit live updates for any auto-created orders
+    const socketManager = require('../lib/socket');
+    if (procurementActions.some(a => a.type === 'manufacturing_order')) {
+      socketManager.emitDataUpdated('manufacturing');
+    }
+    if (procurementActions.some(a => a.type === 'purchase_order')) {
+      socketManager.emitDataUpdated('purchase');
+    }
+
     res.json({ success: true, data: confirmedOrder, procurementActions });
   } catch (err) { next(err); }
 });

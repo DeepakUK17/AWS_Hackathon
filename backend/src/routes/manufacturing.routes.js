@@ -163,6 +163,13 @@ router.post('/:id/confirm', authMiddleware, requireRole('admin', 'manufacturing'
     });
 
     await createAuditLog({ userId: req.user.id, action: 'CONFIRMED', model: 'ManufacturingOrder', recordId: mo.id, description: `MO ${mo.orderNo} confirmed. Components reserved.${shortages.length > 0 ? ` Shortages: ${shortages.map(s => s.name).join(', ')}` : ''}`, manufacturingOrderId: mo.id });
+
+    // Emit live update for any auto-created purchase orders
+    const socketManager = require('../lib/socket');
+    if (procurementActions.some(a => a.type === 'purchase_order')) {
+      socketManager.emitDataUpdated('purchase');
+    }
+
     res.json({ success: true, data: confirmed, shortages });
   } catch (err) { next(err); }
 });
